@@ -23,16 +23,17 @@ export const uploadKeys = {
 
 export const fileStorage = {
   save: async (storage: FileStorage): Promise<void> => {
-    await redis.set(
-      `${REDIS_PREFIX}:file:${storage.id}`,
-      storage.file,
-      "EX",
-      300
-    );
+    await redis.hset(`${REDIS_PREFIX}:file:${storage.id}`, {
+      file: storage.file,
+      filename: storage.filename,
+    });
+    await redis.expire(`${REDIS_PREFIX}:file:${storage.id}`, 300);
   },
   find: async (id: string): Promise<FileStorage | null> => {
-    const file = await redis.get(`${REDIS_PREFIX}:file:${id}`);
-    return file ? { id, file } : null;
+    const data = await redis.hgetall(`${REDIS_PREFIX}:file:${id}`);
+    return Object.keys(data).length > 0
+      ? { id, file: data.file, filename: data.filename }
+      : null;
   },
   delete: async (id: string): Promise<void> => {
     await redis.del(`${REDIS_PREFIX}:file:${id}`);

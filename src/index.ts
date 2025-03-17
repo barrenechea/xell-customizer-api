@@ -4,8 +4,8 @@ import { z } from "zod";
 import { zValidator } from "@hono/zod-validator";
 import { createId } from "@paralleldrive/cuid2";
 
-import octokit from "./gh";
-import { fileStorage, uploadKeys } from "./storage";
+import octokit from "./utils/gh";
+import { fileStorage, uploadKeys } from "./utils/storage";
 
 const app = new Hono();
 
@@ -51,7 +51,7 @@ app.post(
       return c.json({ error: "Failed to dispatch workflow" }, 418);
     }
 
-    uploadKeys.push({ id, key });
+    uploadKeys.save({ id, key });
     return c.json({ id });
   }
 );
@@ -69,10 +69,11 @@ app.post(
   async (c) => {
     const { id, key, file } = c.req.valid("json");
 
-    const uploadKey = uploadKeys.find((k) => k.id === id && k.key === key);
-    if (!uploadKey) return c.json({ error: "Invalid id or key" }, 403);
+    const uploadKey = await uploadKeys.find(id);
+    if (!uploadKey || uploadKey.key !== key)
+      return c.json({ error: "Invalid id or key" }, 403);
 
-    fileStorage.push({ id, file });
+    await fileStorage.save({ id, file });
     return c.status(201);
   }
 );
@@ -88,17 +89,16 @@ app.get(
   async (c) => {
     const { id } = c.req.valid("param");
 
-    const validId = uploadKeys.find((k) => k.id === id);
-    if (!validId) return c.json({ error: "Invalid id" }, 404);
+    const uploadKey = await uploadKeys.find(id);
+    if (!uploadKey) return c.json({ error: "Invalid id" }, 404);
 
-    const storedFile = fileStorage.find((f) => f.id === id);
+    const storedFile = await fileStorage.find(id);
     if (!storedFile) return c.json({ error: "File not processed yet" }, 404);
 
-    const { file } = storedFile;
-    fileStorage.splice(fileStorage.indexOf(storedFile), 1);
-    uploadKeys.splice(uploadKeys.indexOf(validId), 1);
+    await uploadKeys.delete(id);
+    await fileStorage.delete(id);
 
-    return c.json({ file });
+    return c.json({ file: storedFile.file });
   }
 );
 

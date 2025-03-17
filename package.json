@@ -1,14 +1,15 @@
 {
   "name": "xell-customizer-api",
   "scripts": {
-    "start": "bun run src/index.ts",
-    "dev": "bun run --hot src/index.ts"
+    "start": "bun src/index.ts",
+    "dev": "bun --hot src/index.ts"
   },
   "dependencies": {
     "@hono/zod-validator": "^0.4.3",
     "@octokit/rest": "^21.1.1",
     "@paralleldrive/cuid2": "^2.2.2",
     "hono": "^4.7.4",
+    "ioredis": "^5.6.0",
     "zod": "^3.24.2"
   },
   "devDependencies": {

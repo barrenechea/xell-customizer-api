@@ -26,6 +26,7 @@ bun install
 
 ```
 GITHUB_TOKEN=your_github_token_here
+REDIS_URL=redis://your_redis_location:6379
 ```
 
 ## Usage
@@ -35,7 +36,7 @@ GITHUB_TOKEN=your_github_token_here
 Start the development server with hot reloading:
 
 ```sh
-bun run dev
+bun dev
 ```
 
 ## CORS Configuration

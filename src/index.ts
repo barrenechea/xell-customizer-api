@@ -36,7 +36,7 @@ app.post(
       await octokit.actions.createWorkflowDispatch({
         owner: "barrenechea",
         repo: "xell-reloaded",
-        ref: "main",
+        ref: "master",
         workflow_id: "custom-build.yml",
         inputs: {
           id,
@@ -75,7 +75,7 @@ app.post(
       return c.json({ error: "Invalid id or key" }, 403);
 
     await fileStorage.save({ id, file, filename });
-    return c.status(201);
+    return c.json({ message: "File uploaded" });
   }
 );
 

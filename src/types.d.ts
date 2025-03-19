@@ -7,4 +7,5 @@ export interface FileStorage {
   id: string;
   file: string;
   filename: string;
+  error?: string;
 }

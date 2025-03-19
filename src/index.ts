@@ -65,17 +65,18 @@ app.post(
       key: z.string(),
       file: z.string(),
       filename: z.string(),
+      error: z.string().optional(),
     })
   ),
   async (c) => {
-    const { id, key, file, filename } = c.req.valid("json");
+    const { id, key, file, filename, error } = c.req.valid("json");
 
     const uploadKey = await uploadKeys.find(id);
     if (!uploadKey || uploadKey.key !== key)
       return c.json({ error: "Invalid id or key" }, 403);
 
-    await fileStorage.save({ id, file, filename });
-    return c.json({ message: "File uploaded" });
+    await fileStorage.save({ id, file, filename, error });
+    return c.json({ message: "Payload uploaded" });
   }
 );
 
@@ -95,6 +96,7 @@ app.get(
 
     const storedFile = await fileStorage.find(id);
     if (!storedFile) return c.json({ error: "File not processed yet" }, 404);
+    if (storedFile.error) return c.json({ error: storedFile.error }, 500);
 
     await uploadKeys.delete(id);
     await fileStorage.delete(id);

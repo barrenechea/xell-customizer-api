@@ -8,11 +8,11 @@
     "@hono/zod-validator": "^0.4.3",
     "@octokit/rest": "^21.1.1",
     "@paralleldrive/cuid2": "^2.2.2",
-    "hono": "^4.7.4",
+    "hono": "^4.7.6",
     "ioredis": "^5.6.0",
     "zod": "^3.24.2"
   },
   "devDependencies": {
-    "@types/bun": "^1.2.5"
+    "@types/bun": "^1.2.9"
   }
 }

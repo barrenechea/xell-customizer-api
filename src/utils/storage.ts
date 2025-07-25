@@ -1,15 +1,11 @@
-import { UploadKey, FileStorage } from "../types";
+import type { FileStorage, UploadKey } from "../types";
 import redis from "./redis";
 
 const REDIS_PREFIX = "xell-customizer";
 
 export const uploadKeys = {
   save: async (uploadKey: UploadKey): Promise<void> => {
-    await redis.hset(
-      `${REDIS_PREFIX}:upload:${uploadKey.id}`,
-      "key",
-      uploadKey.key
-    );
+    await redis.hset(`${REDIS_PREFIX}:upload:${uploadKey.id}`, "key", uploadKey.key);
     await redis.expire(`${REDIS_PREFIX}:upload:${uploadKey.id}`, 300);
   },
   find: async (id: string): Promise<UploadKey | null> => {
@@ -31,9 +27,7 @@ export const fileStorage = {
   },
   find: async (id: string): Promise<FileStorage | null> => {
     const data = await redis.hgetall(`${REDIS_PREFIX}:file:${id}`);
-    return Object.keys(data).length > 0
-      ? { id, file: data.file, filename: data.filename }
-      : null;
+    return Object.keys(data).length > 0 ? { id, file: data.file, filename: data.filename } : null;
   },
   delete: async (id: string): Promise<void> => {
     await redis.del(`${REDIS_PREFIX}:file:${id}`);

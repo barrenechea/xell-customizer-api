@@ -1,112 +1,19 @@
 import { Hono } from "hono";
 import { cors } from "hono/cors";
-import { z } from "zod";
-import { zValidator } from "@hono/zod-validator";
-import { createId } from "@paralleldrive/cuid2";
-
-import octokit from "./utils/gh";
-import { fileStorage, uploadKeys } from "./utils/storage";
+import routes from "./routes";
 
 const app = new Hono();
 
+// Apply CORS middleware
 app.use(
   "*",
   cors({
     origin: ["https://xell.barrenechea.cl"],
     allowMethods: ["GET", "POST"],
-  })
+  }),
 );
 
-app.get("/health", (c) => {
-  return c.json({ status: "ok" }, 200);
-});
-
-app.post(
-  "/generate",
-  zValidator(
-    "json",
-    z.object({
-      background_color: z.string().optional(),
-      foreground_color: z.string().optional(),
-      ascii_art: z.string().optional(),
-    })
-  ),
-  async (c) => {
-    const body = c.req.valid("json");
-    const id = createId();
-    const key = createId();
-
-    try {
-      await octokit.actions.createWorkflowDispatch({
-        owner: "barrenechea",
-        repo: "xell-reloaded",
-        ref: "master",
-        workflow_id: "custom-build.yml",
-        inputs: {
-          id,
-          key,
-          ...body,
-        },
-      });
-    } catch (error: any) {
-      if (error.status) {
-        return c.json({ error: error.message }, error.status);
-      }
-      return c.json({ error: "Failed to dispatch workflow" }, 418);
-    }
-
-    uploadKeys.save({ id, key });
-    return c.json({ id });
-  }
-);
-
-app.post(
-  "/upload",
-  zValidator(
-    "json",
-    z.object({
-      id: z.string(),
-      key: z.string(),
-      file: z.string(),
-      filename: z.string(),
-      error: z.string().optional(),
-    })
-  ),
-  async (c) => {
-    const { id, key, file, filename, error } = c.req.valid("json");
-
-    const uploadKey = await uploadKeys.find(id);
-    if (!uploadKey || uploadKey.key !== key)
-      return c.json({ error: "Invalid id or key" }, 403);
-
-    await fileStorage.save({ id, file, filename, error });
-    return c.json({ message: "Payload uploaded" });
-  }
-);
-
-app.get(
-  "/download/:id",
-  zValidator(
-    "param",
-    z.object({
-      id: z.string(),
-    })
-  ),
-  async (c) => {
-    const { id } = c.req.valid("param");
-
-    const uploadKey = await uploadKeys.find(id);
-    if (!uploadKey) return c.json({ error: "Invalid id" }, 404);
-
-    const storedFile = await fileStorage.find(id);
-    if (!storedFile) return c.json({ error: "File not processed yet" }, 404);
-    if (storedFile.error) return c.json({ error: storedFile.error }, 500);
-
-    await uploadKeys.delete(id);
-    await fileStorage.delete(id);
-
-    return c.json({ file: storedFile.file, filename: storedFile.filename });
-  }
-);
+// Mount all routes
+app.route("/", routes);
 
 export default app;

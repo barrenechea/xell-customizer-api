@@ -3,7 +3,9 @@
   "scripts": {
     "start": "bun src/index.ts",
     "dev": "bun --hot src/index.ts",
-    "build": "bun build ./src/index.ts --compile --target=bun --outfile=./xell-api"
+    "build": "bun build ./src/index.ts --compile --target=bun --outfile=./xell-api",
+    "check": "biome check .",
+    "check:fix": "biome check --write ."
   },
   "dependencies": {
     "@hono/zod-validator": "^0.7.2",
@@ -14,6 +16,7 @@
     "zod": "^4.0.10"
   },
   "devDependencies": {
+    "@biomejs/biome": "^2.1.2",
     "@types/bun": "^1.2.19"
   }
 }

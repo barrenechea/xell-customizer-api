@@ -2,7 +2,8 @@
   "name": "xell-customizer-api",
   "scripts": {
     "start": "bun src/index.ts",
-    "dev": "bun --hot src/index.ts"
+    "dev": "bun --hot src/index.ts",
+    "build": "bun build ./src/index.ts --compile --target=bun --outfile=./xell-api"
   },
   "dependencies": {
     "@hono/zod-validator": "^0.7.2",

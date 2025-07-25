@@ -17,6 +17,10 @@ app.use(
   })
 );
 
+app.get("/health", (c) => {
+  return c.json({ status: "ok" }, 200);
+});
+
 app.post(
   "/generate",
   zValidator(

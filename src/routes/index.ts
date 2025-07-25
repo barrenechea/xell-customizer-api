@@ -19,7 +19,7 @@ app.post("/generate", zValidator("json", generateSchema), async function handleG
     return c.json(result);
   } catch (error: unknown) {
     if (error instanceof HTTPException) {
-      return error.getResponse();
+      return c.json({ error: error.message }, error.status);
     }
     return c.json({ error: "Internal server error" }, 500);
   }
@@ -33,7 +33,7 @@ app.post("/upload", zValidator("json", uploadSchema), async function handleUploa
     return c.json(result);
   } catch (error: unknown) {
     if (error instanceof HTTPException) {
-      return error.getResponse();
+      return c.json({ error: error.message }, error.status);
     }
     return c.json({ error: "Internal server error" }, 500);
   }
@@ -50,7 +50,7 @@ app.get(
       return c.json(result);
     } catch (error: unknown) {
       if (error instanceof HTTPException) {
-        return error.getResponse();
+        return c.json({ error: error.message }, error.status);
       }
       return c.json({ error: "Internal server error" }, 500);
     }

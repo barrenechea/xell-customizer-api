@@ -3,7 +3,7 @@
   "scripts": {
     "start": "bun src/index.ts",
     "dev": "bun --hot src/index.ts",
-    "build": "bun build ./src/index.ts --compile --target=bun --outfile=./xell-api",
+    "build": "bun build --production ./src/index.ts --compile --target=bun --outfile=./xell-api",
     "check": "biome check .",
     "check:fix": "biome check --write ."
   },

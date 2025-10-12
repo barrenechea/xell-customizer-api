@@ -27,7 +27,10 @@ export const fileStorage = {
   },
   find: async (id: string): Promise<FileStorage | null> => {
     const data = await redis.hgetall(`${REDIS_PREFIX}:file:${id}`);
-    return Object.keys(data).length > 0 ? { id, file: data.file, filename: data.filename } : null;
+    if (Object.keys(data).length === 0 || !data.file || !data.filename) {
+      return null;
+    }
+    return { id, file: data.file, filename: data.filename };
   },
   delete: async (id: string): Promise<void> => {
     await redis.del(`${REDIS_PREFIX}:file:${id}`);

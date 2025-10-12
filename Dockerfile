@@ -9,7 +9,7 @@ COPY . .
 RUN bun run build
 
 # Production stage - minimal Alpine image
-FROM alpine:3.22 AS runtime
+FROM alpine:3 AS runtime
 
 # Install only required runtime dependencies
 RUN apk add --no-cache libgcc libstdc++ && \

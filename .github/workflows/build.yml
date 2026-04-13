@@ -80,6 +80,6 @@ jobs:
     steps:
       - name: Call Watchtower
         run: |
-          curl -sS \
+          curl -sS -X POST \
             -H "Authorization: Bearer ${{ secrets.WATCHTOWER_TOKEN }}" \
             https://watchtower.barrenechea.cl/v1/update?image=${{ env.CONTAINER_REPO }}

@@ -7,6 +7,7 @@ import { fileStorage, uploadKeys } from "../utils/storage";
 export async function generateBuild(input: GenerateInput) {
   const id = createId();
   const key = createId();
+  const date = new Date().toISOString().slice(0, 10).replace(/-/g, "");
 
   try {
     await octokit.actions.createWorkflowDispatch({
@@ -17,6 +18,7 @@ export async function generateBuild(input: GenerateInput) {
       inputs: {
         id,
         key,
+        date,
         ...input,
       },
     });

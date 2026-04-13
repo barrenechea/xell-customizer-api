@@ -26,7 +26,6 @@ bun install
 
 ```
 GITHUB_TOKEN=your_github_token_here
-REDIS_URL=redis://your_redis_location:6379
 ```
 
 ## Usage

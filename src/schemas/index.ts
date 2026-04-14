@@ -1,6 +1,5 @@
 import { z } from "zod";
 
-// Generate build schemas
 export const generateSchema = z.object({
   background_color: z.string().optional(),
   foreground_color: z.string().optional(),

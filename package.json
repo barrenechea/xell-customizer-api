@@ -7,13 +7,13 @@
     "cf-typegen": "wrangler types --env-interface CloudflareBindings"
   },
   "dependencies": {
-    "@hono/zod-validator": "^0.7.6",
+    "@hono/zod-validator": "^0.8.0",
     "@octokit/rest": "^22.0.1",
     "@paralleldrive/cuid2": "^3.3.0",
-    "hono": "^4.12.12",
-    "zod": "^4.3.6"
+    "hono": "^4.12.27",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
-    "wrangler": "^4.82.2"
+    "wrangler": "^4.106.0"
   }
 }
